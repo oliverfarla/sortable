@@ -326,11 +326,11 @@ for listing in listings:
     bestProducts = listing.GetBestMatches(MIN_SCORE)
     if len(bestProducts)==1:
         bestProducts[0].matches.append(listing)
-    else:
-        print(len(bestProducts))
-        missed.append(listing)
-        print(listing.item)
         #print("Match "+products[0].item["product_name"]+"  -  "+listing.item["title"]+"\n")
+    else:
+        #print(len(bestProducts))
+        missed.append(listing)
+        #print(listing.item)
 
 totalMatches = 0
 #print results
