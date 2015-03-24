@@ -1,10 +1,17 @@
+"""
+This program is a solution to sortable.com's programming challenge of matching products with product descriptions.
+It was tested in python3 and took about 5 minutes to run.
+The general approach is to parse the product descriptions in varying ways and producing a list of tokens (strings),
+then checking if these lists of tokens match the ones in the product description. 
+Penalties are given for parsing methods which are partially destructive, as well as out of order matchings and a
+few other imperfect matchings. If the total score from penalties is high enough, the product is matched.
+"""
 import sys
 import json
 import re
 import copy
 
 MIN_SCORE = -2.0 #minimum score to allow a matching
-FAIL_SCORE=-10.0 #low enough score to short circuit and stop evaluating current matching
 
 assert(len(sys.argv)==3)
 products_file = sys.argv[1]
