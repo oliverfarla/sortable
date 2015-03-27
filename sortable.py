@@ -1,10 +1,18 @@
 """
 This program is a solution to sortable.com's programming challenge of matching products with product descriptions.
-It was tested in python3 and took about 5 minutes to run.
+It was written to run in python3 and took about 5 minutes to run.
 The general approach is to parse the product descriptions in varying ways and producing a list of tokens (strings),
 then checking if these lists of tokens match the ones in the product description. 
 Penalties are given for parsing methods which are partially destructive, as well as out of order matchings and a
 few other imperfect matchings. If the total score from penalties is high enough, the product is matched.
+
+My philosopy behind the way the program is written was to prioritize experimentation over performance since a
+heuristic solution is likely the best, which usually requires testing. This was accomplished by writing a simple 
+architecture which tests various interpretations of the product & listing text (called "parsings" in the program) and
+looks for potential matches. That way it was easy to view the results and add new parsings for situations that were
+initially overlooked. The architecture was written to allow overriding pentalties and comparison algorithms along
+the way to facilitate different types of comparisons.
+
 """
 import sys
 import json
@@ -44,6 +52,8 @@ def ReplaceNonAlphaNumeric(s,replaceWith=''):
 def SplitOnSpaces(s):
     return " ".join(s.lower().split()).split()
 
+#if the model number is something like GV-999X, drop the X, but don't drop the X in GV-999XX
+#this pattern seems common for cases when X is a colour. 
 def DropLastLetterOnModelNumber(lst):
     return [s[0:-1] if re.search('\d\[a-z]$',s) else s for s in lst ]
 
@@ -247,6 +257,7 @@ allParsings.append(BasicParsing(lambda s: DropLastLetterOnModelNumber(SplitOnSpa
 listings = [Listing(listing,allParsings) for listing in listings]
 products = [Product(product,allParsings) for product in products]
 
+#stores already computed scores using tuples as the keys (only exists for performance reasons)
 scoreCache = {}
 
 def CalcBestScore(matchType,listingLineDict, productLineDict,matchOptions=None):
@@ -265,7 +276,6 @@ def CalcBestScore(matchType,listingLineDict, productLineDict,matchOptions=None):
     #scoreCache[tup] = bestScore
     return bestScore
 
-scoresCache = {}
 def DoManufacturer(listing,product,matchOptions=None):
     manu_score = None
     if "manufacturer" in product.item:
