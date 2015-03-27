@@ -13,11 +13,13 @@ import copy
 
 MIN_SCORE = -2.0 #minimum score to allow a matching
 
-assert(len(sys.argv)==3)
+assert(len(sys.argv)==4)
 products_file = sys.argv[1]
 listings_file = sys.argv[2]
+results_file = sys.argv[3]
 #products_file = "products.txt" #sys.argv[1]
 #listings_file = "listings.txt" #sys.argv[2]
+#results_file = "results.txt" #sys.argv[3]
 products = []
 with open(products_file) as f:
     products = [json.loads(line) for line in f]
@@ -340,10 +342,12 @@ for listing in listings:
         #print(listing.item)
 
 totalMatches = 0
-#print results
-for product in products:
-    result = {"product_name": product.item["product_name"], 
-              "listings": [listing.item for listing in product.matches]}
-    totalMatches += len(product.matches)
-    print(json.dumps(result))
+#output results
+with open("results.txt","w") as f:
+    for product in products:
+        result = {"product_name": product.item["product_name"], 
+                  "listings": [listing.item for listing in product.matches]}
+        totalMatches += len(product.matches)
+        f.write(json.dumps(result)+"\n")
 #print(totalMatches)
+
