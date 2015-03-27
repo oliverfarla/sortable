@@ -258,8 +258,9 @@ listings = [Listing(listing,allParsings) for listing in listings]
 products = [Product(product,allParsings) for product in products]
 
 #stores already computed scores using tuples as the keys (only exists for performance reasons)
-scoreCache = {}
+scoresCache = {}
 
+#returns None or a numeric score
 def CalcBestScore(matchType,listingLineDict, productLineDict,matchOptions=None):
     bestScore = None
     #tup = (matchType,listingLineDict,productLineDict,matchOptions)
@@ -276,6 +277,7 @@ def CalcBestScore(matchType,listingLineDict, productLineDict,matchOptions=None):
     #scoreCache[tup] = bestScore
     return bestScore
 
+#Calculate best score for manufacturer
 def DoManufacturer(listing,product,matchOptions=None):
     manu_score = None
     if "manufacturer" in product.item:
@@ -295,6 +297,7 @@ def DoManufacturer(listing,product,matchOptions=None):
         listing.manufacturerScores[manu] = manu_score
     return manu_score
 
+#Calculate best score for family
 def DoFamily(listing, product, matchOptions=None):
     fam_score = None
     if "family" in product.item:
@@ -310,6 +313,7 @@ def DoFamily(listing, product, matchOptions=None):
         fam_score = -0.5 #product with no family could be strange give that product a penalty
     return fam_score
 
+#Calculate best score for model
 def DoModel(listing,product,matchOptions=None):
     mod_score = None
     if "model" in product.item:
